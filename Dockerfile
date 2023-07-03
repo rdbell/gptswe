@@ -12,10 +12,10 @@ COPY go.sum .
 RUN go mod download
 
 # Copy the remaining source code into the working directory
-COPY . .
+COPY *.go .
 
 # Build the Go application
 RUN go build -o gptswe .
 
 # Command to run the application when the container starts
-CMD ["/app/gptswe"]
+ENTRYPOINT ["/app/gptswe"]
