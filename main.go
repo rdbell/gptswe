@@ -38,7 +38,7 @@ func main() {
 	handleError(err)
 
 	// Submit job
-	_, err = llmClient.submitJob(dialogue)
+	err = llmClient.submitJob(dialogue)
 	handleError(err)
 }
 

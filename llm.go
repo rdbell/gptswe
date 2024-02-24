@@ -75,8 +75,10 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 
 		// Add the function result to the dialogue
 		dialogue = append(dialogue, openai.ChatCompletionMessage{
-			Role:    openai.ChatMessageRoleTool,
-			Content: out,
+			Role:       openai.ChatMessageRoleTool,
+			Content:    out,
+			Name:       msg.ToolCalls[0].Function.Name,
+			ToolCallID: msg.ToolCalls[0].ID,
 		})
 	}
 }
