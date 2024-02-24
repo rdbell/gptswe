@@ -7,7 +7,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/k0kubun/pp"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -67,28 +66,28 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 			fmt.Println(msg.Content)
 		}
 
-		if len(msg.ToolCalls) != 1 {
+		if len(msg.ToolCalls) < 1 {
 			fmt.Println("No tool calls found")
 			continue
 		}
 
-		pp.Println(msg.ToolCalls[0].Function)
+		// Run the functions
+		for _, toolCall := range msg.ToolCalls {
+			response := toolCall.Function
+			out, err := runFunction(&response)
+			if err != nil {
+				fmt.Println("Error: ", err)
+				out = fmt.Sprintf("Error: %v", err)
+			}
 
-		// Run the function
-		response := msg.ToolCalls[0].Function
-		out, err := runFunction(&response)
-		if err != nil {
-			fmt.Println("Error: ", err)
-			out = fmt.Sprintf("Error: %v", err)
+			// Add the function result to the dialogue
+			dialogue = append(dialogue, openai.ChatCompletionMessage{
+				Role:       openai.ChatMessageRoleTool,
+				Content:    out,
+				Name:       toolCall.Function.Name,
+				ToolCallID: toolCall.ID,
+			})
 		}
-
-		// Add the function result to the dialogue
-		dialogue = append(dialogue, openai.ChatCompletionMessage{
-			Role:       openai.ChatMessageRoleTool,
-			Content:    out,
-			Name:       msg.ToolCalls[0].Function.Name,
-			ToolCallID: msg.ToolCalls[0].ID,
-		})
 	}
 }
 
