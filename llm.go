@@ -45,7 +45,7 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 		// Call OpenAI
 		resp, err := openAIClient.CreateChatCompletion(context.Background(),
 			openai.ChatCompletionRequest{
-				Model:    openai.GPT432K,
+				Model:    openai.GPT4Turbo0125,
 				Messages: dialogue,
 				Tools:    allTools(),
 			},
