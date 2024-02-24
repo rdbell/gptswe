@@ -23,12 +23,13 @@ func Response(msg string) {
 }
 
 // Tool logs a tool being used by the LLM.
-func Tool(function string, args string) {
+func Tool(function string, args string, response string) {
 	// Display banner
 	banner("tool")
 
 	// Display function and args
-	message("Running function", function+" "+args, color.Yellow)
+	message("Running function: ", function+" "+args, color.Yellow)
+	message("Function response: ", response, color.Yellow)
 }
 
 // Error logs an error from the LLM.
