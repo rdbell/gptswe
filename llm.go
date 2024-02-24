@@ -7,7 +7,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/k0kubun/pp"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -76,8 +75,6 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 
 			continue
 		}
-
-		pp.Println(msg)
 
 		// Run the functions
 		for _, toolCall := range msg.ToolCalls {
