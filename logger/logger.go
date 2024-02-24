@@ -21,12 +21,12 @@ const (
 func logFormat() int {
 	// Set log format
 	switch strings.ToLower(os.Getenv(logformatEnvVarName)) {
+	case "none":
+		return logFormatFull
 	case "compact":
 		return logFormatCompact
-	case "full":
-		return logFormatFull
 	default:
-		return logFormatNone
+		return logFormatFull
 	}
 }
 
