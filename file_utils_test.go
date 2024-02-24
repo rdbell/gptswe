@@ -70,7 +70,7 @@ func TestApplyChanges(t *testing.T) {
 		"UPDATE " + tmpfile1.Name() + "\nFILE_START\nupdated file contents...\nFILE_END\n" +
 		"DELETE " + tmpfile2.Name() + "\nFILE_START\n(deleted)\nFILE_END"
 	t.Setenv("APPLY_CHANGES_NO_CONFIRM", "true")
-	err = applyChanges(changes)
+	err = runFunction(changes)
 	if err != nil {
 		t.Fatalf("unable to apply changes: %v", err)
 	}

@@ -57,16 +57,7 @@ func main() {
 	handleError(err)
 
 	// Submit job
-	out, err := llmClient.submitJob(choice, messages)
-	handleError(err)
-
-	// Bail out here if this is a command that doesn't interact with the files
-	if !commandCausesFileChanges(choice) {
-		return
-	}
-
-	// Apply changes
-	err = applyChanges(out)
+	_, err = llmClient.submitJob(choice, messages)
 	handleError(err)
 }
 

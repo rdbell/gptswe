@@ -52,35 +52,7 @@ func buildPrompt(fileContents string, command int, detailsFlag string) (string, 
 	}
 
 	if commandCausesFileChanges(command) {
-		instructions += "\n\n" +
-			"Interact with files using the following commands: CREATE, UPDATE, DELETE\n\n" +
-			"Reply in the following format:\n\n" +
-			"```\n" +
-			"UPDATE file1.ext\n" +
-			"FILE_START\n" +
-			"updated file contents...\n" +
-			"FILE_END\n" +
-			"UPDATE file2.ext\n" +
-			"FILE_START\n" +
-			"updated file contents...\n" +
-			"FILE_END\n" +
-			"DELETE filename3.ext\n" +
-			"FILE_START\n" +
-			"(deleted)\n" +
-			"FILE_END\n" +
-			"CREATE filename3.ext\n" +
-			"FILE_START\n" +
-			"new file contents...\n" +
-			"FILE_END\n" +
-			"(etc.)\n" +
-			"```\n\n" +
-			"YOUR RESPONSE SHOULD STRICTLY ADHERE TO THE ABOVE FORMAT.\n" +
-			"- Only include files and commands relevant to the task at hand.\n" +
-			"- Do not include explanations.\n" +
-			"- Do not abbreviate or omit file contents - include the entire file contents in your response.\n" +
-			"- Ensure to keep all existing comments within the code while making changes.\n" +
-			"- DO NOT include anything in your response other than commands to interact with the files.\n" +
-			"- DO NOT skip lines by writing comments like `// ommiting existing functions...` or `// code is unchanged` or ` // ... `."
+		instructions += "\n\n" + "Interact with files using the provided functions."
 	}
 
 	return instructions, nil
