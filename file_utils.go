@@ -7,7 +7,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/k0kubun/pp"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -193,7 +192,6 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 			return "", err
 		}
 	case "finish":
-		pp.Println(dialogue)
 		os.Exit(0)
 
 	default:

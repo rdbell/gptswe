@@ -1,10 +1,10 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
+	"github.com/rdbell/gptswe/logger"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -25,7 +25,7 @@ func main() {
 	prompt, err := buildPrompt(choice)
 	handleError(err)
 
-	fmt.Println(prompt)
+	logger.Request(prompt)
 
 	// Add to the dialoge
 	dialogue = append(dialogue, openai.ChatCompletionMessage{
@@ -89,55 +89,11 @@ func selectAction() int {
 	return choice
 }
 
-func generateCommandDescriptionsText() string {
-	// Dynamically generate command descriptions
-	descText := "Skip the command choice prompt - "
-	for i, cmd := range orderedCommands() {
-		descText += fmt.Sprintf("%d: %s", cmd, commandDescriptions()[cmd])
-		if i < len(orderedCommands())-1 {
-			descText += ", "
-		}
-	}
-	return descText
-}
-
 func commandCausesFileChanges(command int) bool {
 	return command == AddFeature ||
 		command == FixBug ||
 		command == CodeCleanup ||
 		command == WriteTests
-}
-
-func getCommandLineArguments() ([]string, int, string) {
-	// Ensure arguments were provided
-	args := os.Args[1:]
-	if len(args) == 0 {
-		printHelp()
-		os.Exit(1)
-	}
-
-	// Get command line arguments
-	var commandFlag int
-	var detailsFlag string
-	flag.IntVar(&commandFlag, "command", 0, generateCommandDescriptionsText())
-	flag.StringVar(&detailsFlag, "details", "", "Provide additional details to the LLM")
-	flag.Parse()
-
-	// Use the remaining arguments as the list of files
-	fileList := flag.Args()
-
-	// Ensure files were provided
-	if len(fileList) == 0 {
-		printHelp()
-		os.Exit(1)
-	}
-
-	return fileList, commandFlag, detailsFlag
-}
-
-func printHelp() {
-	fmt.Println("Usage: ./gptswe [file1] [file2] ...")
-	os.Exit(1)
 }
 
 func handleError(err error) {

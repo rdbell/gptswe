@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
 
+	"github.com/rdbell/gptswe/logger"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -63,11 +63,11 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 		dialogue = append(dialogue, msg)
 
 		if msg.Content != "" {
-			fmt.Println(msg.Content)
+			logger.Response(msg.Content)
 		}
 
 		if len(msg.ToolCalls) < 1 {
-			fmt.Println("No tool calls found")
+			logger.Error(errors.New("no tool selected"))
 			dialogue = append(dialogue, openai.ChatCompletionMessage{
 				Role:    openai.ChatMessageRoleSystem,
 				Content: "error: please select a tool to use.",
@@ -78,10 +78,11 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 
 		// Run the functions
 		for _, toolCall := range msg.ToolCalls {
+			logger.Tool(toolCall.Function.Name, toolCall.Function.Arguments)
 			response := toolCall.Function
 			out, err := runFunction(&response)
 			if err != nil {
-				fmt.Println("Error: ", err)
+				logger.Error(err)
 				out = fmt.Sprintf("Error: %v", err)
 			}
 
@@ -94,10 +95,4 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 			})
 		}
 	}
-}
-
-func responseLooksValid(command int, response string) bool {
-	return strings.Index(response, "CREATE ") == 0 ||
-		strings.Index(response, "UPDATE ") == 0 ||
-		strings.Index(response, "DELETE ") == 0
 }

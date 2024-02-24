@@ -4,42 +4,38 @@ import (
 	"github.com/fatih/color"
 )
 
-// LLMRequest logs a request to the LLM.
-func LLMRequest(msg string) {
+// Request logs a request to the LLM.
+func Request(msg string) {
 	// Display banner
-	llmBanner()
+	banner("request")
 
 	// Display question
 	message("Submitted query", msg, color.Cyan)
 }
 
-// LLMResponse logs a response from the LLM.
-func LLMResponse(msg string) {
+// Response logs a response from the LLM.
+func Response(msg string) {
 	// Display banner
-	llmBanner()
+	banner("response")
 
 	// Display answer
 	message("Received response", msg, color.Green)
 }
 
-func LLMTool(function string, args string) {
+// Tool logs a tool being used by the LLM.
+func Tool(function string, args string) {
 	// Display banner
-	llmBanner()
+	banner("tool")
 
 	// Display function and args
 	message("Running function", function+" "+args, color.Yellow)
 }
 
-// LLMError logs an error from the LLM.
-func LLMError(err error) {
+// Error logs an error from the LLM.
+func Error(err error) {
 	// Display banner
-	llmBanner()
+	banner("error")
 
 	// Display error
 	message("Received error", err.Error(), color.Red)
-}
-
-func llmBanner() {
-	// Display banner
-	banner("LLM Query")
 }
