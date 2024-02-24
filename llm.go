@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/k0kubun/pp"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -64,6 +65,7 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 		}
 
 		// Append the response to the dialogue
+		pp.Println(msg)
 		dialogue = append(dialogue, msg)
 
 		// Run the function

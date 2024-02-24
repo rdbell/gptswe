@@ -94,8 +94,6 @@ func deleteFile(filePath string) error {
 
 // runFunction parses the changes from the LLM response and applies them to the filesystem
 func runFunction(function *openai.FunctionCall) (string, error) {
-	pp.Println(dialogue)
-
 	// Args are a JSON string. Parse them into a map
 	args := make(map[string]interface{})
 	err := json.Unmarshal([]byte(function.Arguments), &args)
@@ -198,6 +196,7 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 			return "", err
 		}
 	case "finish":
+		pp.Println(dialogue)
 		os.Exit(0)
 
 	default:
