@@ -47,9 +47,7 @@ func buildPrompt(command int) (string, error) {
 		instructions += strings.TrimSpace(scanner.Text())
 	}
 
-	if commandCausesFileChanges(command) {
-		instructions += "\n\n" + "Interact with my files using the provided functions. First fetch the file list, then create, read, update, or delete files as needed."
-	}
+	instructions += "\n\n" + "Interact with my files using the provided functions. First fetch the file list, then create, read, update, or delete files as needed."
 
 	return instructions, nil
 }
