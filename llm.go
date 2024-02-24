@@ -59,19 +59,26 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 
 		// Get the response
 		msg := resp.Choices[0].Message
-		if len(msg.ToolCalls) != 1 {
-			fmt.Printf("Completion error: len(toolcalls): %v\n", len(msg.ToolCalls))
-			return errors.New("no tool calls in response")
-		}
 
 		// Append the response to the dialogue
-		pp.Println(msg)
 		dialogue = append(dialogue, msg)
+
+		if msg.Content != "" {
+			fmt.Println(msg.Content)
+		}
+
+		if len(msg.ToolCalls) != 1 {
+			fmt.Println("No tool calls found")
+			continue
+		}
+
+		pp.Println(msg.ToolCalls[0].Function)
 
 		// Run the function
 		response := msg.ToolCalls[0].Function
 		out, err := runFunction(&response)
 		if err != nil {
+			fmt.Println("Error: ", err)
 			out = fmt.Sprintf("Error: %v", err)
 		}
 

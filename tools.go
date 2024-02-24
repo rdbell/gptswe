@@ -8,13 +8,13 @@ import (
 func allTools() []openai.Tool {
 	// List all files
 	list := openai.FunctionDefinition{
-		Name:        "file_list",
+		Name:        "list_files",
 		Description: "List all files in the current directory",
 	}
 
 	// Create a new file
 	create := openai.FunctionDefinition{
-		Name:        "file_create",
+		Name:        "create_file",
 		Description: "Create a new file",
 		Parameters: jsonschema.Definition{
 			Type: jsonschema.Object,
@@ -33,7 +33,7 @@ func allTools() []openai.Tool {
 
 	// Read a file
 	read := openai.FunctionDefinition{
-		Name:        "file_read",
+		Name:        "read_file",
 		Description: "Read a file",
 		Parameters: jsonschema.Definition{
 			Type: jsonschema.Object,
@@ -48,7 +48,7 @@ func allTools() []openai.Tool {
 
 	// Update a file
 	update := openai.FunctionDefinition{
-		Name:        "file_update",
+		Name:        "update_file",
 		Description: "Update a file",
 		Parameters: jsonschema.Definition{
 			Type: jsonschema.Object,
@@ -67,7 +67,7 @@ func allTools() []openai.Tool {
 
 	// Delete a file
 	del := openai.FunctionDefinition{
-		Name:        "file_delete",
+		Name:        "delete_file",
 		Description: "Delete a file",
 		Parameters: jsonschema.Definition{
 			Type: jsonschema.Object,
