@@ -5,27 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/sashabaranov/go-openai"
 )
 
-// listFiles returns a list of all files in the current directory.
+// listFiles returns a directory tree of the current working directory.
 func listFiles() (string, error) {
-	file, err := os.Open(".")
-	if err != nil {
-		return "", fmt.Errorf("failed to open current directory: %v", err)
-	}
-	defer file.Close()
-
-	fileInfo, err := file.Readdir(0)
-	if err != nil {
-		return "", fmt.Errorf("failed to read current directory: %v", err)
-	}
-
 	var files []string
-	for _, info := range fileInfo {
-		files = append(files, info.Name())
+	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+		files = append(files, path)
+		return nil
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to list files: %v", err)
 	}
 
 	return strings.Join(files, "\n"), nil
