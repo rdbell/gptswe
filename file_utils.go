@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -40,13 +41,9 @@ func readFile(filePath string) (string, error) {
 	defer file.Close()
 
 	var contents []string
-	for {
-		var line string
-		_, err := fmt.Fscanln(file, &line)
-		if err != nil {
-			break
-		}
-		contents = append(contents, line)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		contents = append(contents, scanner.Text())
 	}
 
 	return strings.Join(contents, "\n"), nil

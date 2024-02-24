@@ -69,6 +69,11 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 
 		if len(msg.ToolCalls) < 1 {
 			fmt.Println("No tool calls found")
+			dialogue = append(dialogue, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleSystem,
+				Content: "Please select a tool to use.",
+			})
+
 			continue
 		}
 
