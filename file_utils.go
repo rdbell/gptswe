@@ -15,9 +15,12 @@ import (
 func listFiles() (string, error) {
 	var files []string
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
-		// Ingore hidden files and directories
-		if strings.HasPrefix(info.Name(), ".") {
-			return nil
+		// Ignore hidden files and directories by checking the entire path.
+		// Split the path and check each part.
+		for _, part := range strings.Split(path, string(os.PathSeparator)) {
+			if strings.HasPrefix(part, ".") && part != "." && part != ".." {
+				return filepath.SkipDir
+			}
 		}
 
 		files = append(files, path)
