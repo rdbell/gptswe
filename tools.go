@@ -23,7 +23,7 @@ func allTools() []openai.Tool {
 					Type:        jsonschema.String,
 					Description: `The name of the file to create."`,
 				},
-				"content": {
+				"contents": {
 					Type:        jsonschema.String,
 					Description: `The contents of the file."`,
 				},
@@ -57,7 +57,7 @@ func allTools() []openai.Tool {
 					Type:        jsonschema.String,
 					Description: `The name of the file to update."`,
 				},
-				"content": {
+				"contents": {
 					Type:        jsonschema.String,
 					Description: `The new contents of the file."`,
 				},
