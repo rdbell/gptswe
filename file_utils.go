@@ -15,17 +15,26 @@ import (
 func listFiles() (string, error) {
 	var files []string
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
-		// Ignore hidden files and directories by checking the entire path.
-		// Split the path and check each part.
+		if err != nil {
+			return err
+		}
+
+		// Check if the path or any of its parent directories start with a dot.
+		isHidden := false
 		for _, part := range strings.Split(path, string(os.PathSeparator)) {
 			if strings.HasPrefix(part, ".") && part != "." && part != ".." {
-				return filepath.SkipDir
+				isHidden = true
+				break
 			}
 		}
 
-		files = append(files, path)
+		// Only add non-hidden files/directories to the list.
+		if !isHidden {
+			files = append(files, path)
+		}
 		return nil
 	})
+
 	if err != nil {
 		return "", fmt.Errorf("failed to list files: %v", err)
 	}
