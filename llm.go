@@ -77,13 +77,14 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 
 		// Run the functions
 		for _, toolCall := range msg.ToolCalls {
-			logger.Tool(toolCall.Function.Name, toolCall.Function.Arguments)
 			response := toolCall.Function
 			out, err := runFunction(&response)
 			if err != nil {
 				logger.Error(err)
 				out = fmt.Sprintf("Error: %v", err)
 			}
+
+			logger.Tool(toolCall.Function.Name, toolCall.Function.Arguments, out)
 
 			// Add the function result to the dialogue
 			dialogue = append(dialogue, openai.ChatCompletionMessage{
