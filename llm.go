@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/k0kubun/pp"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -70,6 +71,8 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 			fmt.Println("No tool calls found")
 			continue
 		}
+
+		pp.Println(msg)
 
 		// Run the functions
 		for _, toolCall := range msg.ToolCalls {

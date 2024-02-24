@@ -110,9 +110,9 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 
 		return files, nil
 	case "create_file":
-		fileName, ok := args["file_name"]
+		fileName, ok := args["name"]
 		if !ok {
-			return "", fmt.Errorf("missing file_name argument")
+			return "", fmt.Errorf("missing name argument")
 		}
 
 		contents, ok := args["contents"]
@@ -123,7 +123,7 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 		// Ensure string types
 		fileNameStr, ok := fileName.(string)
 		if !ok {
-			return "", fmt.Errorf("file_name argument must be a string")
+			return "", fmt.Errorf("name argument must be a string")
 		}
 
 		contentsStr, ok := contents.(string)
@@ -136,15 +136,15 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 			return "", err
 		}
 	case "read_file":
-		fileName, ok := args["file_name"]
+		fileName, ok := args["name"]
 		if !ok {
-			return "", fmt.Errorf("missing file_name argument")
+			return "", fmt.Errorf("missing name argument")
 		}
 
 		// Ensure string type
 		fileNameStr, ok := fileName.(string)
 		if !ok {
-			return "", fmt.Errorf("file_name argument must be a string")
+			return "", fmt.Errorf("name argument must be a string")
 		}
 
 		contents, err := readFile(fileNameStr)
@@ -154,9 +154,9 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 
 		return contents, nil
 	case "update_file":
-		fileName, ok := args["file_name"]
+		fileName, ok := args["name"]
 		if !ok {
-			return "", fmt.Errorf("missing file_name argument")
+			return "", fmt.Errorf("missing name argument")
 		}
 
 		contents, ok := args["contents"]
@@ -167,7 +167,7 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 		// Ensure string types
 		fileNameStr, ok := fileName.(string)
 		if !ok {
-			return "", fmt.Errorf("file_name argument must be a string")
+			return "", fmt.Errorf("name argument must be a string")
 		}
 
 		contentsStr, ok := contents.(string)
@@ -180,15 +180,15 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 			return "", err
 		}
 	case "delete_file":
-		fileName, ok := args["file_name"]
+		fileName, ok := args["name"]
 		if !ok {
-			return "", fmt.Errorf("missing file_name argument")
+			return "", fmt.Errorf("missing name argument")
 		}
 
 		// Ensure string type
 		fileNameStr, ok := fileName.(string)
 		if !ok {
-			return "", fmt.Errorf("file_name argument must be a string")
+			return "", fmt.Errorf("name argument must be a string")
 		}
 
 		err := deleteFile(fileNameStr)
