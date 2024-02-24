@@ -6,14 +6,36 @@ import (
 	"os"
 	"strings"
 
+	"github.com/k0kubun/pp"
 	"github.com/sashabaranov/go-openai"
 )
 
+// listFiles returns a list of all files in the current directory.
+func listFiles() (string, error) {
+	file, err := os.Open(".")
+	if err != nil {
+		return "", fmt.Errorf("failed to open current directory: %v", err)
+	}
+	defer file.Close()
+
+	fileInfo, err := file.Readdir(0)
+	if err != nil {
+		return "", fmt.Errorf("failed to read current directory: %v", err)
+	}
+
+	var files []string
+	for _, info := range fileInfo {
+		files = append(files, info.Name())
+	}
+
+	return strings.Join(files, "\n"), nil
+}
+
 // readFile reads the contents of the specified file and returns them as a slice of strings.
-func readFile(filePath string) ([]string, error) {
+func readFile(filePath string) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open file %s: %v", filePath, err)
+		return "", fmt.Errorf("failed to open file %s: %v", filePath, err)
 	}
 	defer file.Close()
 
@@ -27,7 +49,7 @@ func readFile(filePath string) ([]string, error) {
 		contents = append(contents, line)
 	}
 
-	return contents, nil
+	return strings.Join(contents, "\n"), nil
 }
 
 // createFile creates a new file with the specified contents.
@@ -72,6 +94,8 @@ func deleteFile(filePath string) error {
 
 // runFunction parses the changes from the LLM response and applies them to the filesystem
 func runFunction(function *openai.FunctionCall) (string, error) {
+	pp.Println(dialogue)
+
 	// Args are a JSON string. Parse them into a map
 	args := make(map[string]interface{})
 	err := json.Unmarshal([]byte(function.Arguments), &args)
@@ -80,6 +104,13 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 	}
 
 	switch function.Name {
+	case "list_files":
+		files, err := listFiles()
+		if err != nil {
+			return "", err
+		}
+
+		return files, nil
 	case "create_file":
 		fileName, ok := args["file_name"]
 		if !ok {
@@ -106,8 +137,6 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 		if err != nil {
 			return "", err
 		}
-
-		return "", nil
 	case "read_file":
 		fileName, ok := args["file_name"]
 		if !ok {
@@ -125,7 +154,7 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 			return "", err
 		}
 
-		return contents[0], nil
+		return contents, nil
 	case "update_file":
 		fileName, ok := args["file_name"]
 		if !ok {
@@ -152,8 +181,6 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 		if err != nil {
 			return "", err
 		}
-
-		return "", nil
 	case "delete_file":
 		fileName, ok := args["file_name"]
 		if !ok {
@@ -170,7 +197,6 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 		if err != nil {
 			return "", err
 		}
-
 	case "finish":
 		os.Exit(0)
 
@@ -178,5 +204,5 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 		return "", fmt.Errorf("unknown command: %s", function.Name)
 	}
 
-	return "", nil
+	return "Success", nil
 }

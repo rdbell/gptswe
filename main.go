@@ -19,45 +19,26 @@ const (
 )
 
 func main() {
-	args := os.Args[1:]
-
-	if len(args) == 0 {
-		fmt.Println("Usage: ./gptswe [file1] [file2] ...")
-		os.Exit(1)
-	}
-
-	// Get command line arguments
-	fileList, commandFlag, detailsFlag := getCommandLineArguments()
-
-	// Read files
-	fileContents := readFiles(fileList)
-
-	// Select action
-	choice := commandFlag
-	if choice == 0 {
-		choice = selectAction()
-	}
+	choice := selectAction()
 
 	// Build prompt
-	prompt, err := buildPrompt(fileContents, choice, detailsFlag)
+	prompt, err := buildPrompt(choice)
 	handleError(err)
 
 	fmt.Println(prompt)
 
-	// Create job
-	messages := []openai.ChatCompletionMessage{
-		{
-			Role:    openai.ChatMessageRoleUser,
-			Content: prompt,
-		},
-	}
+	// Add to the dialoge
+	dialogue = append(dialogue, openai.ChatCompletionMessage{
+		Role:    openai.ChatMessageRoleUser,
+		Content: prompt,
+	})
 
 	// Create LLM Client
 	llmClient, err := NewLLMClient()
 	handleError(err)
 
 	// Submit job
-	_, err = llmClient.submitJob(choice, messages)
+	_, err = llmClient.submitJob(dialogue)
 	handleError(err)
 }
 

@@ -9,50 +9,46 @@ import (
 )
 
 // buildPrompt prompts the user for more details based on their chosen command.
-func buildPrompt(fileContents string, command int, detailsFlag string) (string, error) {
+func buildPrompt(command int) (string, error) {
 	// Build instructions
-	instructions := fmt.Sprintf("I have the following files in my project.\n\n%s\n\n", fileContents)
+	instructions := "I have a software project in my current directory. I need help with the following: \n\n"
 
-	if detailsFlag == "" {
-		switch command {
-		case AskQuestion:
-			fmt.Println("Ask a question about your code:")
-		case AddFeature:
-			instructions += "Implement the following feature(s): "
-			fmt.Println("Describe the feature:")
-		case FixBug:
-			instructions += "Fix the following bug(s): "
-			fmt.Println("Describe the bug:")
-		case CodeCleanup:
-			instructions += "Cleanup and refactor this codebase. "
-			fmt.Println("Additional comments:")
-		case WriteTests:
-			instructions += "Write unit tests for this codebase. "
-			fmt.Println("Additional comments:")
-		case FindBugs:
-			instructions += "Find bugs in this codebase. "
-			fmt.Println("Additional comments:")
-		case CodeReview:
-			instructions += "Make suggestions for code improvements. "
-			fmt.Println("Additional comments:")
-		default:
-			return "", errors.New("invalid selection")
-		}
+	switch command {
+	case AskQuestion:
+		fmt.Println("Ask a question about your code:")
+	case AddFeature:
+		instructions += "Implement the following feature(s): "
+		fmt.Println("Describe the feature:")
+	case FixBug:
+		instructions += "Fix the following bug(s): "
+		fmt.Println("Describe the bug:")
+	case CodeCleanup:
+		instructions += "Cleanup and refactor this codebase. "
+		fmt.Println("Additional comments:")
+	case WriteTests:
+		instructions += "Write unit tests for this codebase. "
+		fmt.Println("Additional comments:")
+	case FindBugs:
+		instructions += "Find bugs in this codebase. "
+		fmt.Println("Additional comments:")
+	case CodeReview:
+		instructions += "Make suggestions for code improvements. "
+		fmt.Println("Additional comments:")
+	default:
+		return "", errors.New("invalid selection")
+	}
 
-		instructions += "\n\n"
+	instructions += "\n\n"
 
-		fmt.Print("> ")
-		scanner := bufio.NewScanner(os.Stdin)
-		scanner.Scan()
-		if strings.TrimSpace(scanner.Text()) != "" {
-			instructions += strings.TrimSpace(scanner.Text())
-		}
-	} else {
-		instructions += detailsFlag
+	fmt.Print("> ")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	if strings.TrimSpace(scanner.Text()) != "" {
+		instructions += strings.TrimSpace(scanner.Text())
 	}
 
 	if commandCausesFileChanges(command) {
-		instructions += "\n\n" + "Interact with files using the provided functions."
+		instructions += "\n\n" + "Interact with my files using the provided functions."
 	}
 
 	return instructions, nil

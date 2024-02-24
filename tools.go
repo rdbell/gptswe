@@ -6,6 +6,12 @@ import (
 )
 
 func allTools() []openai.Tool {
+	// List all files
+	list := openai.FunctionDefinition{
+		Name:        "file_list",
+		Description: "List all files in the current directory",
+	}
+
 	// Create a new file
 	create := openai.FunctionDefinition{
 		Name:        "file_create",
@@ -80,6 +86,11 @@ func allTools() []openai.Tool {
 		Description: "Finish the conversation",
 	}
 
+	l := openai.Tool{
+		Type:     openai.ToolTypeFunction,
+		Function: &list,
+	}
+
 	c := openai.Tool{
 		Type:     openai.ToolTypeFunction,
 		Function: &create,
@@ -105,5 +116,5 @@ func allTools() []openai.Tool {
 		Function: &finish,
 	}
 
-	return []openai.Tool{c, r, u, d, f}
+	return []openai.Tool{l, c, r, u, d, f}
 }
