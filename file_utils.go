@@ -15,6 +15,11 @@ import (
 func listFiles() (string, error) {
 	var files []string
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+		// Ingore hidden files and directories
+		if strings.HasPrefix(info.Name(), ".") {
+			return nil
+		}
+
 		files = append(files, path)
 		return nil
 	})
