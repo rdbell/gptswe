@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -58,7 +59,7 @@ func allTools() []openai.Tool {
 		},
 		{
 			name:        "run_linter",
-			description: "Run a code linter on the project",
+			description: "Run the code linter on the project",
 			parameters:  nil,
 		},
 		{
@@ -168,32 +169,29 @@ func deleteFile(filePath string) error {
 	return nil
 }
 
+// runLinter runs the golangci-lint linter on the project.
 func runLinter() (out string, err error) {
-	linterCmd := "golangci-lint run ./..."
+	// Define the command and arguments
+	cmd := exec.Command("golangci-lint", "run", "./...")
 
-	// Run the linter
-	out, err = runCommand(linterCmd)
-	if err != nil {
-		return "", fmt.Errorf("failed to run linter: %v", err)
-	}
-
-	return "", nil
-}
-
-// runCommand runs the given command and returns its output.
-func runCommand(cmd string) (string, error) {
-	// Split the command into the command and its arguments
-	parts := strings.Fields(cmd)
-	head := parts[0]
-	parts = parts[1:]
+	// Create buffers to capture STDOUT and STDERR
+	var stdoutBuf, stderrBuf bytes.Buffer
+	cmd.Stdout = &stdoutBuf
+	cmd.Stderr = &stderrBuf
 
 	// Run the command
-	out, err := exec.Command(head, parts...).Output()
+	err = cmd.Run()
+
+	// Combine STDOUT and STDERR
+	out = stdoutBuf.String() + stderrBuf.String()
+
 	if err != nil {
-		return "", fmt.Errorf("failed to run command: %v", err)
+		// Return combined output and an error indicating the command failed
+		return out, fmt.Errorf("linter returned the following: \n%v", err)
 	}
 
-	return string(out), nil
+	// If no error, just return the output
+	return out, nil
 }
 
 // runFunction parses the changes from the LLM response and applies them to the filesystem
