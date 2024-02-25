@@ -47,7 +47,7 @@ func allTools() []openai.Tool {
 			description: "Update a file",
 			parameters: map[string]jsonschema.Definition{
 				"name":     {Type: jsonschema.String, Description: `The name of the file to update."`},
-				"contents": {Type: jsonschema.String, Description: `The new contents of the file."`},
+				"contents": {Type: jsonschema.String, Description: `The new contents of the file. Do not omit any content that should be in the file."`},
 			},
 		},
 		{

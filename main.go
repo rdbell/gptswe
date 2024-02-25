@@ -17,7 +17,7 @@ func main() {
 
 	logger.Request(prompt)
 
-	// Add to the dialoge
+	// Add to the dialogue
 	dialogue = append(dialogue, openai.ChatCompletionMessage{
 		Role:    openai.ChatMessageRoleUser,
 		Content: prompt,
@@ -28,7 +28,7 @@ func main() {
 	handleError(err)
 
 	// Submit job
-	err = llmClient.submitJob(dialogue)
+	err = llmClient.SubmitJob(dialogue)
 	handleError(err)
 }
 
