@@ -32,13 +32,6 @@ func main() {
 	handleError(err)
 }
 
-func commandCausesFileChanges(command int) bool {
-	return command == AddFeature ||
-		command == FixBug ||
-		command == CodeCleanup ||
-		command == WriteTests
-}
-
 func handleError(err error) {
 	if err != nil {
 		fmt.Println(err)

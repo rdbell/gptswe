@@ -185,9 +185,13 @@ func runLinter() (out string, err error) {
 	// Combine STDOUT and STDERR
 	out = stdoutBuf.String() + stderrBuf.String()
 
+	// Return combined output and an error indicating the command failed
 	if err != nil {
-		// Return combined output and an error indicating the command failed
-		return out, fmt.Errorf("linter returned the following: \n%v", err)
+		if out == "" {
+			out = err.Error()
+		}
+
+		return out, fmt.Errorf("linter returned the following: \n%s", out)
 	}
 
 	// If no error, just return the output
