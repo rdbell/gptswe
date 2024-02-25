@@ -183,7 +183,7 @@ func deleteFile(filePath string) error {
 
 // grep searches for the specified query in the project files.
 func grep(query string) (string, error) {
-	var results []string
+	results := make(map[string]map[int]string)
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -203,10 +203,20 @@ func grep(query string) (string, error) {
 
 		// Scan the file for the query
 		scanner := bufio.NewScanner(file)
+		lineNumber := 1
 		for scanner.Scan() {
 			if strings.Contains(scanner.Text(), query) {
-				results = append(results, fmt.Sprintf("%s: %s", path, scanner.Text()))
+				if results[path] == nil {
+					results[path] = make(map[int]string)
+				}
+				results[path][lineNumber] = scanner.Text()
 			}
+			lineNumber++
+		}
+
+		// Check for errors from scanning
+		if err := scanner.Err(); err != nil {
+			return fmt.Errorf("failed to scan file %s: %v", path, err)
 		}
 
 		return nil
@@ -216,7 +226,16 @@ func grep(query string) (string, error) {
 		return "", fmt.Errorf("failed to search files: %v", err)
 	}
 
-	return strings.Join(results, "\n"), nil
+	// Format the results
+	var output strings.Builder
+	for file, lines := range results {
+		output.WriteString(file + ":\n")
+		for line, text := range lines {
+			output.WriteString(fmt.Sprintf("  %d: %s\n", line, text))
+		}
+	}
+
+	return output.String(), nil
 }
 
 // requestApproval prompts the user for approval to continue.
