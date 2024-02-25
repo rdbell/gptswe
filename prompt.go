@@ -8,6 +8,43 @@ import (
 	"strings"
 )
 
+const (
+	AskQuestion = iota + 1
+	AddFeature
+	FixBug
+	CodeCleanup
+	WriteTests
+	FindBugs
+	CodeReview
+	RunLinter
+)
+
+func commandDescriptions() map[int]string {
+	return map[int]string{
+		AskQuestion: "Ask a question",
+		AddFeature:  "Add a feature",
+		FixBug:      "Fix a bug",
+		CodeCleanup: "Code cleanup",
+		WriteTests:  "Write unit tests",
+		FindBugs:    "Find bugs",
+		CodeReview:  "Code review",
+		RunLinter:   "Run linter",
+	}
+}
+
+func orderedCommands() []int {
+	return []int{
+		AskQuestion,
+		AddFeature,
+		FixBug,
+		CodeCleanup,
+		WriteTests,
+		FindBugs,
+		CodeReview,
+		RunLinter,
+	}
+}
+
 // buildPrompt prompts the user for more details based on their chosen command.
 func buildPrompt(command int) (string, error) {
 	// Build instructions
@@ -34,6 +71,9 @@ func buildPrompt(command int) (string, error) {
 	case CodeReview:
 		instructions += "Make suggestions for code improvements. "
 		fmt.Println("Additional comments:")
+	case RunLinter:
+		instructions += "Run the linter and fix any errors/warnings. "
+		fmt.Println("Additional comments:")
 	default:
 		return "", errors.New("invalid selection")
 	}
@@ -50,4 +90,27 @@ func buildPrompt(command int) (string, error) {
 	instructions += "\n\n" + "Interact with my files using the provided functions. First fetch the file list, then create, read, update, or delete files as needed."
 
 	return instructions, nil
+}
+
+func selectAction() int {
+	// Print list of commands
+	fmt.Println("Choose from the following commands:")
+	for _, cmd := range orderedCommands() {
+		fmt.Printf("%d: %s\n", cmd, commandDescriptions()[cmd])
+	}
+	fmt.Print("> ")
+
+	// Read user's choice
+	var choice int
+	for {
+		_, err := fmt.Scanln(&choice)
+
+		if err == nil && commandDescriptions()[choice] != "" {
+			break
+		}
+
+		fmt.Println("Please choose a valid command")
+	}
+
+	return choice
 }
