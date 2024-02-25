@@ -39,6 +39,7 @@ func NewLLMClient() (*LLMClient, error) {
 	return &LLMClient{apiKey: apiKey}, nil
 }
 
+// SubmitJob submits the messages to the LLM and receives the response.
 func (client *LLMClient) SubmitJob(dialogue []openai.ChatCompletionMessage) error {
 	openAIClient := openai.NewClient(client.apiKey)
 
@@ -97,4 +98,3 @@ func (client *LLMClient) SubmitJob(dialogue []openai.ChatCompletionMessage) erro
 		}
 	}
 }
-
