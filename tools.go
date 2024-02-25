@@ -63,6 +63,11 @@ func allTools() []openai.Tool {
 			parameters:  nil,
 		},
 		{
+			name:        "ask_for_approval",
+			description: "Ask for user approval to continue for potentially destructive or dangerous operations",
+			parameters:  nil,
+		},
+		{
 			name:        "finish",
 			description: "Finish the conversation",
 			parameters:  nil,
@@ -308,6 +313,19 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 		}
 
 		return out, nil
+	case "ask_for_approval":
+		// Prompt the user for approval
+		fmt.Println("The AI has requested your approval to continue. Please review the changes and type 'approve' to continue.")
+		fmt.Print("> ")
+
+		// Read user input
+		scanner := bufio.NewScanner(os.Stdin)
+		scanner.Scan()
+		if strings.TrimSpace(scanner.Text()) != "approve" {
+			return "", fmt.Errorf("approval denied")
+		}
+
+		return "approved", nil
 	case "finish":
 		logger.Tool(function.Name, function.Arguments, "Finished conversation")
 		os.Exit(0)

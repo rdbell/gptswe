@@ -69,7 +69,7 @@ func (client *LLMClient) submitJob(dialogue []openai.ChatCompletionMessage) erro
 			logger.Error(errors.New("no tool selected"))
 			dialogue = append(dialogue, openai.ChatCompletionMessage{
 				Role:    openai.ChatMessageRoleSystem,
-				Content: "error: please select a tool to use, or use the 'finish' tool to complete the conversation",
+				Content: "Please select a tool to use, or use the 'finish' tool to complete the conversation.",
 			})
 
 			continue
