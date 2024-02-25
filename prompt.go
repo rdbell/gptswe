@@ -16,7 +16,7 @@ const (
 	WriteTests
 	FindBugs
 	CodeReview
-	RunLinter
+	Lint
 )
 
 func commandDescriptions() map[int]string {
@@ -28,7 +28,7 @@ func commandDescriptions() map[int]string {
 		WriteTests:  "Write unit tests",
 		FindBugs:    "Find bugs",
 		CodeReview:  "Code review",
-		RunLinter:   "Run linter",
+		Lint:        "Fix linter errors",
 	}
 }
 
@@ -41,7 +41,7 @@ func orderedCommands() []int {
 		WriteTests,
 		FindBugs,
 		CodeReview,
-		RunLinter,
+		Lint,
 	}
 }
 
@@ -71,7 +71,7 @@ func buildPrompt(command int) (string, error) {
 	case CodeReview:
 		instructions += "Make suggestions for code improvements. "
 		fmt.Println("Additional comments:")
-	case RunLinter:
+	case Lint:
 		instructions += "Run the linter and fix any errors/warnings. "
 		fmt.Println("Additional comments:")
 	default:
