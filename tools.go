@@ -148,6 +148,12 @@ func createFile(filePath string, contents string) error {
 
 // updateFile overwrites the given file with the provided contents.
 func updateFile(filePath string, contents string) error {
+	// The LLM often tries to be lazy and writes a file ending with "..." to indicate that it has been truncated.
+	// We should throw an error if we see this.
+	if strings.HasSuffix(contents, "...") {
+		return fmt.Errorf("file contents end with '...', indicating truncation. please provide the full contents of the file")
+	}
+
 	file, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("failed to create file %s: %v", filePath, err)
