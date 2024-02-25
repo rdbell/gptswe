@@ -88,8 +88,8 @@ func buildPrompt(command int) (string, error) {
 	}
 
 	instructions += "\n\n" + "I have no fingers. Interact with my files using the provided functions. " +
-		" First fetch the file list, then create, read, update, or delete files as needed. If you fail this task, there " +
-		" will be dire consequences. If you succeed, I will reward you with a treasure beyond your wildest dreams. " +
+		" First fetch the file list, then create, read, update, or delete files as needed. If you fail this task, many " +
+		" people could be in danger. If you succeed, I will reward you with a treasure beyond your wildest dreams. " +
 		" Do not be lazy, do not omit any steps, and do not fail me. Good luck."
 
 	return instructions, nil
