@@ -63,7 +63,14 @@ func allTools() []openai.Tool {
 			parameters:  nil,
 		},
 		{
-			name:        "ask_for_approval",
+			name:        "grep",
+			description: "Search for a string in the project files",
+			parameters: map[string]jsonschema.Definition{
+				"query": {Type: jsonschema.String, Description: `The string to search for."`},
+			},
+		},
+		{
+			name:        "request_approval",
 			description: "Ask for user approval to continue for potentially destructive or dangerous operations",
 			parameters:  nil,
 		},
@@ -172,6 +179,60 @@ func deleteFile(filePath string) error {
 		return fmt.Errorf("failed to delete file %s: %v", filePath, err)
 	}
 	return nil
+}
+
+// grep searches for the specified query in the project files.
+func grep(query string) (string, error) {
+	var results []string
+	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Skip directories
+		if info.IsDir() {
+			return nil
+		}
+
+		// Open the file
+		file, err := os.Open(path)
+		if err != nil {
+			return fmt.Errorf("failed to open file %s: %v", path, err)
+		}
+		defer file.Close()
+
+		// Scan the file for the query
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			if strings.Contains(scanner.Text(), query) {
+				results = append(results, fmt.Sprintf("%s: %s", path, scanner.Text()))
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return "", fmt.Errorf("failed to search files: %v", err)
+	}
+
+	return strings.Join(results, "\n"), nil
+}
+
+// requestApproval prompts the user for approval to continue.
+func requestApproval() (string, error) {
+	// Prompt the user for approval
+	fmt.Println("The AI has requested your approval to continue. Please review the changes and type 'approve' to continue.")
+	fmt.Print("> ")
+
+	// Read user input
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	if strings.TrimSpace(scanner.Text()) != "approve" {
+		return "", fmt.Errorf("approval denied")
+	}
+
+	return "approved", nil
 }
 
 // runLinter runs the golangci-lint linter on the project.
@@ -313,19 +374,21 @@ func runFunction(function *openai.FunctionCall) (string, error) {
 		}
 
 		return out, nil
-	case "ask_for_approval":
-		// Prompt the user for approval
-		fmt.Println("The AI has requested your approval to continue. Please review the changes and type 'approve' to continue.")
-		fmt.Print("> ")
-
-		// Read user input
-		scanner := bufio.NewScanner(os.Stdin)
-		scanner.Scan()
-		if strings.TrimSpace(scanner.Text()) != "approve" {
-			return "", fmt.Errorf("approval denied")
+	case "grep":
+		query, ok := args["query"]
+		if !ok {
+			return "", fmt.Errorf("missing query argument")
 		}
 
-		return "approved", nil
+		// Ensure string type
+		queryStr, ok := query.(string)
+		if !ok {
+			return "", fmt.Errorf("query argument must be a string")
+		}
+
+		return grep(queryStr)
+	case "request_approval":
+		return requestApproval()
 	case "finish":
 		logger.Tool(function.Name, function.Arguments, "Finished conversation")
 		os.Exit(0)
