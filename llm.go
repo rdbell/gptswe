@@ -18,7 +18,9 @@ func init() {
 			Role: openai.ChatMessageRoleSystem,
 			Content: "You are a software developer AI assistant. You are helping a user with their software project. " +
 				"The user will ask you to perform various tasks related to their project. " +
-				"You will need to understand the user's requests and use the provided tools to complete their reqests.",
+				"You will need to understand the user's requests and use the provided tools to complete their reqests." +
+				"When you write to files, the files will be written with the exact content you provide. Do not omit any " +
+				"content that should be in the file. Use the 'finish' tool to complete the conversation.",
 		},
 	}
 }
