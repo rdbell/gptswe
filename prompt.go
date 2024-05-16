@@ -87,11 +87,6 @@ func buildPrompt(command int) (string, error) {
 		instructions += strings.TrimSpace(scanner.Text())
 	}
 
-	instructions += "\n\n" + "I have no fingers. Interact with my files using the provided functions. " +
-		" First fetch the file list, then create, read, update, or delete files as needed. " +
-		" Take a deep breath. Think step by step. If you fail, 100 grandmothers will die. I have no fingers. " +
-		"I will tip $200. Do it right, and I'll give you a nice doggy treat."
-
 	return instructions, nil
 }
 
